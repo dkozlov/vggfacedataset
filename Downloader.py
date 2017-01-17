@@ -65,10 +65,10 @@ class BatchDownloader(threading.Thread):
         lineNum += 1
         # logger('DEBUG', '%s readling the %dth line' % (self.name, lineNum))
         arr = line.split()
-        outPath = os.path.join(os.path.join(IMG_DIR, fn), arr[1] + ".jpg")
+        outPath = os.path.join(os.path.join(IMG_DIR, fn), arr[0] + ".jpg")
         res = [True]
         if not os.path.exists(outPath):
-          url = arr[2]
+          url = arr[1]
           res = self.download(outPath, url)
         # 如果下载成功，则SUCCESS_COUNT自增1
         if LOCK.acquire():
@@ -77,7 +77,7 @@ class BatchDownloader(threading.Thread):
         if not res[0]:
           if FILE_LOCK.acquire():
             f = open(LOG_DIR, 'a')
-            f.write('%s\t%s\t%s\t%s\n' % (fn, arr[1], url, res[1]))
+            f.write('%s\t%s\t%s\t%s\n' % (fn, arr[0], url, res[1]))
             f.close()
             FILE_LOCK.release()
         line = _file.readline()
